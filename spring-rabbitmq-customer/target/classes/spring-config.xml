@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:rabbit="http://www.springframework.org/schema/rabbit"
+	xsi:schemaLocation="
+          http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+    	  http://www.springframework.org/schema/rabbit http://www.springframework.org/schema/rabbit/spring-rabbit-1.5.xsd">
+
+	<!-- ========================================RabbitMQ========================================= -->
+	<!-- 连接工厂 -->
+	<rabbit:connection-factory id="connectionFactory" host="127.0.0.1" publisher-confirms="true" virtual-host="test" username="test" password="test" />
+    <!-- 监听器 -->
+	<rabbit:listener-container connection-factory="connectionFactory">
+		<!-- queues是队列名称，可填多个，用逗号隔开， method是ref指定的Bean调用Invoke方法执行的方法名称 -->
+		<rabbit:listener queues="red" method="onMessage" ref="redQueueListener" />
+		<rabbit:listener queues="blue" method="onMessage" ref="blueQueueListener" />
+	</rabbit:listener-container>
+	<!-- 队列声明 -->
+	<rabbit:queue name="red" durable="true" />
+	<!-- 队列声明 -->
+	<rabbit:queue name="blue" durable="true" />
+    <!-- 红色监听处理器 -->
+	<bean id="redQueueListener" class="com.aitongyi.customer.RedQueueListener" />
+    <!-- 颜色监听处理器 -->
+	<bean id="blueQueueListener" class="com.aitongyi.customer.BlueQueueListener" />
+
+</beans>
